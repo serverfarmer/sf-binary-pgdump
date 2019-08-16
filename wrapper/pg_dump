@@ -1,0 +1,20 @@
+#!/bin/sh
+. /opt/farm/scripts/init
+
+# Binaries downloaded from
+# https://www.enterprisedb.com/download-postgresql-binaries
+
+if [ "$OSVER" = "debian-buster" ]; then
+	pgver="10.10"
+else
+	pgver="10.7-1"
+fi
+
+if [ "`uname -m`" = "x86_64" ]; then
+	arch="linux-x64"
+else
+	arch="linux-x86"
+fi
+
+path=/opt/farm/ext/binary-pgdump/bin/postgresql-$pgver/$arch
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$path/lib  "$path/bin/pg_dump" "$@"
