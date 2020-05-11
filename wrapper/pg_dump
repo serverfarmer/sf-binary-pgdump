@@ -10,11 +10,11 @@ else
 	pgver="10.7-1"
 fi
 
-if [ "`uname -m`" = "x86_64" ]; then
-	arch="linux-x64"
-else
-	arch="linux-x86"
-fi
+arch=`/opt/farm/ext/system/detect-architecture.sh`
+path=/opt/farm/ext/binary-pgdump/bin/postgresql-$pgver/linux.$arch
 
-path=/opt/farm/ext/binary-pgdump/bin/postgresql-$pgver/$arch
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$path/lib  "$path/bin/pg_dump" "$@"
+if [ ! -d $path ] || ! grep -qFx $OSVER /opt/farm/ext/binary-pgdump/config/below10.conf; then
+	/usr/bin/pg_dump "$@"
+else
+	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$path/lib  "$path/bin/pg_dump" "$@"
+fi
